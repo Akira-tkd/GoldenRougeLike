@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
 public enum TileInfo
@@ -50,6 +51,9 @@ public class DangeonGenerator : MonoBehaviour
      * 二次元リストを簡単に参照できるようにするメソッドも持つ
      */
 
+    public List<GameObject> Players;
+    [SerializeField] Tilemap _tilemap;
+
     [SerializeField] int _mapHeight;
     [SerializeField] int _mapWidth;
 
@@ -77,7 +81,8 @@ public class DangeonGenerator : MonoBehaviour
         GenerateRoom(rand);
         ConnectRooms(rand);
         MapSwap();
-        RoomDebug();
+        PlayerSpwan(rand);
+        // RoomDebug();
     }
 
     void Fill(int tile)
@@ -106,8 +111,6 @@ public class DangeonGenerator : MonoBehaviour
 
         _roomMinSize = Mathf.Clamp(baseSize - 2, 3, 5);
         _roomMaxSize = Mathf.Clamp(baseSize + 2, 4, 10);
-
-        Debug.Log($"最小値:{_roomMinSize},最大値:{_roomMaxSize}");
 
         int trying = 0;
         while(rooms.Count < _roomCount && trying < _roomCount * 50)
@@ -233,6 +236,7 @@ public class DangeonGenerator : MonoBehaviour
         }
     }
 
+    // int型の配列で作った地形情報をDangeonTileの二次元配列に変えるためのメソッド
     void MapSwap()
     {
         for(int y = 0; y < _mapHeight; y++)
@@ -253,6 +257,26 @@ public class DangeonGenerator : MonoBehaviour
         }
     }
 
+    void PlayerSpwan(System.Random rand)
+    {
+        foreach(var player in Players)
+        {
+            var p = Instantiate(player);
+            int x, y;
+            while (true)
+            {
+                x = rand.Next(0, _mapWidth);
+                y = rand.Next(0, _mapHeight);
+                if (_mapinfo[x, y] == FLOOR)
+                {
+                    break;
+                }
+            }
+
+            p.GetComponent<PlayerMove>().Init(_map, _tilemap, x, y);
+        }
+    }
+
     void RoomDebug()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -267,5 +291,10 @@ public class DangeonGenerator : MonoBehaviour
         }
 
         Debug.Log(sb.ToString());
+    }
+
+    public List<List<DangeonTile>> GetMap()
+    {
+        return _map;
     }
 }

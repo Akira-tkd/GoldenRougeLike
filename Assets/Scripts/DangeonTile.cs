@@ -9,8 +9,8 @@ public class DangeonTile
 
     public DangeonTile()
     {
-        IsWall = true;
-        IsWater = true;
+        IsWall = false;
+        IsWater = false;
     }
 
     // これらのboolはそのうち対応する型のインスタンスを入れる方向に切り替える予定
