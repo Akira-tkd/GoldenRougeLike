@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ public class GridMoving : MonoBehaviour
      */
 
     [SerializeField] float _walkTime;  // 移動にかかる時間
+    [SerializeField] Charactor _chara;
 
     private List<List<DangeonTile>> _map;  // 二次元リストで管理されているマップ(フロア)の情報
     private Tilemap _tilemap;  // 実際に描写するタイルマップオブジェクト
@@ -44,6 +46,7 @@ public class GridMoving : MonoBehaviour
 
             if (IsWalkable(target, diag))
             {
+                _map[_gridPos.y][_gridPos.x].OnChara = null;
                 var returnPos = SetGridPosition(target, false);  // 実際のオブジェクト位置の更新
                 return returnPos;
             }
@@ -67,6 +70,8 @@ public class GridMoving : MonoBehaviour
             WalkMovie(worldPos);
         }
 
+        _map[_gridPos.y][_gridPos.x].OnChara = _chara;
+
         return _gridPos;
     }
 
@@ -80,7 +85,7 @@ public class GridMoving : MonoBehaviour
                 return false;
             }
         }
-        if (_map[target.y][target.x].IsWall || _map[target.y][target.x].IsWater)
+        if (_map[target.y][target.x].IsWall || _map[target.y][target.x].IsWater || _map[target.y][target.x].OnChara != null)
         {
             return false;
         }
@@ -90,6 +95,9 @@ public class GridMoving : MonoBehaviour
         }
     }
 
+
+    public delegate void OnMovedDelegate();  // 移動完了時の処理を追加sるうためのDelegate
+    public event OnMovedDelegate OnMoved;  // 移動完了時に呼ぶイベント
     void WalkMovie(Vector3 worldPos)
     {
         _isCanMove = false;
@@ -98,6 +106,7 @@ public class GridMoving : MonoBehaviour
             .OnComplete(() =>
             {
                 _isCanMove = true;
+                OnMoved?.Invoke();
             });
     }
 }

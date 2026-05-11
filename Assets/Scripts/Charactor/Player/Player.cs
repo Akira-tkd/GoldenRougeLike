@@ -14,4 +14,13 @@ public class Player : Charactor
     public int y;
 
     public List<Item> Items;
+
+    public void GetItem()
+    {
+        Item item = Map[y][x].OnItem;
+        Items.Add(item);
+        Map[y][x].OnItem = null;
+        Debug.Log($"{item.Name}‚ðƒQƒbƒg‚µ‚Ü‚µ‚½!");
+        DangeonManager.Instance.Changed();
+    }
 }

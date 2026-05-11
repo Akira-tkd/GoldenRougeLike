@@ -28,6 +28,7 @@ public class PlayerInputController : MonoBehaviour
     {
         _canAction = false;
         _actTimer = 0.0f;
+        _gridMoving.OnMoved += MovedAction;
     }
 
     void Update()
@@ -65,6 +66,18 @@ public class PlayerInputController : MonoBehaviour
                 _canAction = false;
                 _actTimer = 0.0f;
             }
+        }
+    }
+
+    public void MovedAction()
+    {
+        if (_player.Map[_player.y][_player.x].OnItem != null)
+        {
+            _player.GetItem();
+        }
+        else
+        {
+            Debug.Log("•à‚¢‚½");
         }
     }
 }
