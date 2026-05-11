@@ -927,10 +927,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DangeonGenerator
   Players:
-  - {fileID: 4646309754476502296, guid: cd053ddb2308dde4baea76f0d7143d33, type: 3}
+  - {fileID: 1996084141358350837, guid: 9b67dbb3155f44941a334d81ea10187b, type: 3}
+  _itemObject: {fileID: 2211433479930765380, guid: ddf8307434d8c2d4da8e7fa3dc85207b, type: 3}
   _tilemap: {fileID: 871681586}
   _mapHeight: 50
   _mapWidth: 80
+  _popItems:
+  - {fileID: 11400000, guid: 007acd42f7555e942b4475f0649fba61, type: 2}
   ExtraConnectionChance: 0.15
 --- !u!114 &923541979
 MonoBehaviour:
