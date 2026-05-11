@@ -92,10 +92,14 @@ public class DangeonGenerator : MonoBehaviour
         _map = new List<List<DangeonTile>>(_mapHeight);
 
         Fill(WALL);  // 仮地形を一旦壁で埋める
+
         GenerateRoom(rand);  // 部屋を生成する
-        PlayerSpwan(rand);  // プレイヤーをスポーンさせる
         ConnectRooms(rand);  // 部屋を道で接続する
+        AddExtraConnections(rand);  // ランダムで追加接続をする
+
         MapSwap();  // 仮情報を二次元リストに移す
+
+        PlayerSpwan(rand);  // プレイヤーをスポーンさせる
         ItemSpawn(rand);  // アイテムをスポーンさせる
 
         // RoomDebug();  // 地形をテキスト表示するデバッグ用のメソッド
@@ -292,10 +296,10 @@ public class DangeonGenerator : MonoBehaviour
                 }
             }
         }
+        DangeonManager.Instance.MapSetter(_map);
     }
 
     // プレイヤーを任意の部屋にスポーンさせる
-    // 部屋にスポーンさせるため、通路生成前のタイミングで呼ぶ必要がある
     void PlayerSpwan(System.Random rand)
     {
         foreach(var player in Players)  // マルチプレイ想定のためプレイヤーはリスト

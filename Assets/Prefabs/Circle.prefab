@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridMoving
   _walkTime: 0.2
+  _chara: {fileID: 2981135090031726165}
 --- !u!114 &2981135090031726165
 MonoBehaviour:
   m_ObjectHideFlags: 0
