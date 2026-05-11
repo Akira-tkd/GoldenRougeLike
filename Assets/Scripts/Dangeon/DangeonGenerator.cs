@@ -58,10 +58,12 @@ public class DangeonGenerator : MonoBehaviour
      */
 
     public List<GameObject> Players;  // マルチプレイ想定のためスポーンするプレイヤーのリストを持つ
+    [SerializeField] GameObject _itemObject;
     [SerializeField] Tilemap _tilemap;  // プレイヤーがタイルマップを参照したいため、生成時に渡せるように持っておく
 
     [SerializeField] int _mapHeight;  // マップの縦幅の最大値
     [SerializeField] int _mapWidth;  // マップの横幅の最大値
+    [SerializeField] List<Item> _popItems;  // そのフロアに出現する可能性のあるアイテムのリスト
 
     private List<List<DangeonTile>> _map;  // マップ情報を持つ二次元リスト
 
@@ -75,6 +77,7 @@ public class DangeonGenerator : MonoBehaviour
     // 地形生成中は仮でintの二次元配列を使うため、それの意味定義
     const int WALL = 0;
     const int FLOOR = 1;
+    const int ROAD = 2;
 
     int[,] _mapinfo;  // 仮で使う地形情報の配列
     List<Room> rooms = new List<Room>();  // 生成した部屋の数
@@ -93,7 +96,8 @@ public class DangeonGenerator : MonoBehaviour
         PlayerSpwan(rand);  // プレイヤーをスポーンさせる
         ConnectRooms(rand);  // 部屋を道で接続する
         MapSwap();  // 仮情報を二次元リストに移す
-        
+        ItemSpawn(rand);  // アイテムをスポーンさせる
+
         // RoomDebug();  // 地形をテキスト表示するデバッグ用のメソッド
     }
 
@@ -223,13 +227,13 @@ public class DangeonGenerator : MonoBehaviour
             // 横から延ばす
             while(pos.x != b.x)
             {
-                _mapinfo[pos.x, pos.y] = FLOOR;
+                _mapinfo[pos.x, pos.y] = ROAD;
                 pos.x += xDirection;
             }
 
             while(pos.y != b.y)
             {
-                _mapinfo[pos.x, pos.y] = FLOOR;
+                _mapinfo[pos.x, pos.y] = ROAD;
                 pos.y += yDirection;
             }
         }
@@ -238,13 +242,13 @@ public class DangeonGenerator : MonoBehaviour
             // 縦から延ばす
             while(pos.y != b.y)
             {
-                _mapinfo[pos.x, pos.y] = FLOOR;
+                _mapinfo[pos.x, pos.y] = ROAD;
                 pos.y += yDirection;
             }
 
             while(pos.x != b.x)
             {
-                _mapinfo[pos.x, pos.y] = FLOOR;
+                _mapinfo[pos.x, pos.y] = ROAD;
                 pos.x += xDirection;
             }
         }
@@ -281,6 +285,10 @@ public class DangeonGenerator : MonoBehaviour
                 else
                 {
                     _map[y][x].IsWall = false;
+                    if (_mapinfo[x, y] == ROAD)
+                    {
+                        _map[y][x].IsRoad = true;
+                    }
                 }
             }
         }
@@ -314,6 +322,32 @@ public class DangeonGenerator : MonoBehaviour
             var gm = p.GetComponent<GridMoving>();
             gm.Init(_map, _tilemap);
             gm.SetGridPosition(new Vector2Int(x, y));
+        }
+    }
+
+    // アイテムをランダムに生成する
+    void ItemSpawn(System.Random rand)
+    {
+        int itemAmount = rand.Next(4, 16);
+        for (int i = 0; i < itemAmount; i++)
+        {
+            var itemObj = Instantiate(_itemObject);  // ゲームオブジェクトとして生成
+            int x, y;
+            while (true)  // スポーン地点が部屋内になるまで無限ループ
+            {
+                x = rand.Next(0, _mapWidth);
+                y = rand.Next(0, _mapHeight);
+
+                if (_mapinfo[x, y] != WALL && _mapinfo[x,y] != ROAD && _map[y][x].OnItem == null)
+                {
+                    break;
+                }
+            }
+
+            var item = _popItems[rand.Next(0, _popItems.Count)];
+            itemObj.GetComponent<ItemObject>().Init(new Vector2Int(x, y), _tilemap, item.Kind);
+            
+            _map[y][x].OnItem = item;
         }
     }
 
