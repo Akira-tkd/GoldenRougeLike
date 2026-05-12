@@ -63,7 +63,7 @@ public class DangeonGenerator : MonoBehaviour
 
     [SerializeField] int _mapHeight;  // マップの縦幅の最大値
     [SerializeField] int _mapWidth;  // マップの横幅の最大値
-    [SerializeField] List<Item> _popItems;  // そのフロアに出現する可能性のあるアイテムのリスト
+    [SerializeField] List<ItemData> _popItems;  // そのフロアに出現する可能性のあるアイテムのリスト
 
     private List<List<DangeonTile>> _map;  // マップ情報を持つ二次元リスト
 
@@ -319,13 +319,12 @@ public class DangeonGenerator : MonoBehaviour
             var pPlayer = p.GetComponent<Player>();
 
             // 座標などの初期情報を与える
-            pPlayer.x = x;
-            pPlayer.y = y;
+            pPlayer.Position = new Vector2Int(x, y);
             pPlayer.Map = _map;
 
             var gm = p.GetComponent<GridMoving>();
             gm.Init(_map, _tilemap);
-            gm.SetGridPosition(new Vector2Int(x, y));
+            gm.SetGridPosition(pPlayer.Position);
         }
     }
 
@@ -348,10 +347,14 @@ public class DangeonGenerator : MonoBehaviour
                 }
             }
 
-            var item = _popItems[rand.Next(0, _popItems.Count)];
-            itemObj.GetComponent<ItemObject>().Init(new Vector2Int(x, y), _tilemap, item.Kind);
-            
+            var itemData = _popItems[rand.Next(0, _popItems.Count)];
+            Item item = new Item(itemData);
+
+            var obj = itemObj.GetComponent<ItemObject>();
+            obj.Init(new Vector2Int(x, y), _tilemap, item.Data.Kind);
+
             _map[y][x].OnItem = item;
+            DangeonManager.Instance.AddItem(obj, item);
         }
     }
 

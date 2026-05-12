@@ -15,15 +15,5 @@ public class ItemObject : MonoBehaviour
         Vector3 worldPos = tilemap.GetCellCenterWorld(new Vector3Int(pos.x, pos.y, 0));
         transform.position = worldPos;
         _sr.sprite = _sprites[(int)kind];
-
-        DangeonManager.OnChanged += ItemDestroy;
-    }
-
-    public void ItemDestroy(List<List<DangeonTile>> map)
-    {
-        if (map[_position.y][_position.x].OnItem == null)
-        {
-            Destroy(gameObject);
-        }
     }
 }
