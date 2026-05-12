@@ -16,14 +16,6 @@ public class ItemObject : MonoBehaviour
         transform.position = worldPos;
         _sr.sprite = _sprites[(int)kind];
 
-        DangeonManager.OnChanged += ItemDestroy;
-    }
-
-    public void ItemDestroy(List<List<DangeonTile>> map)
-    {
-        if (map[_position.y][_position.x].OnItem == null)
-        {
-            Destroy(gameObject);
-        }
+        DangeonManager.Instance.ItemObjectDict.Add(pos, this.gameObject);
     }
 }

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 
 public class DangeonManager : MonoBehaviour
 {
-    public delegate void OnChangedDelegate(List<List<DangeonTile>> map);
-    public static event OnChangedDelegate OnChanged;
 
     public static DangeonManager Instance { get; private set; }
     public List<List<DangeonTile>> Map { get; private set; }
+    public Dictionary<Vector2Int, GameObject> ItemObjectDict { get; private set; }
 
     void Awake()
     {
         Instance = this;
+        ItemObjectDict = new Dictionary<Vector2Int, GameObject>();
     }
 
-    public void Changed()
+    public void DeleteItem(Vector2Int pos)
     {
-        OnChanged?.Invoke(Map);
+        if(ItemObjectDict.TryGetValue(pos, out GameObject item))
+        {
+            Destroy(item);
+        }
     }
 
     public void MapSetter(List<List<DangeonTile>> map)

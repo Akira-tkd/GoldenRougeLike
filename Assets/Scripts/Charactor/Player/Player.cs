@@ -21,6 +21,6 @@ public class Player : Charactor
         Items.Add(item);
         Map[y][x].OnItem = null;
         Debug.Log($"{item.Name}‚ðƒQƒbƒg‚µ‚Ü‚µ‚½!");
-        DangeonManager.Instance.Changed();
+        DangeonManager.Instance.DeleteItem(new Vector2Int(x, y));
     }
 }
