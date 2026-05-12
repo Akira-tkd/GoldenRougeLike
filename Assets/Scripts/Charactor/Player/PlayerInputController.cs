@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 using System.Collections.Generic;
 
-public class PlayerInputController : MonoBehaviour
+public class PlayerInputController : NetworkBehaviour
 {
     /*
      * プレイヤーの入力に関する処理を一括で管理するスクリプト
@@ -33,6 +34,10 @@ public class PlayerInputController : MonoBehaviour
 
     void Update()
     {
+        // 本来はマルチプレイなので必要
+        // 現状はテストシーンすら仕上がっていないのでまだシングルプレイ想定の環境
+        // if(!IsOwner) return;
+
         if(!_canAction)
         {
             _actTimer += Time.deltaTime;
@@ -48,11 +53,11 @@ public class PlayerInputController : MonoBehaviour
             Vector2Int resultPosition;
             if (directionMagnitude > 1.4)
             {
-                resultPosition = _gridMoving.TryMove(true, new Vector2Int(_player.x, _player.y), _intVector);
+                resultPosition = _gridMoving.TryMove(true, _player.Position, _intVector);
             }
             else if (directionMagnitude > 0.1)
             {
-                resultPosition = _gridMoving.TryMove(false, new Vector2Int(_player.x, _player.y), _intVector);
+                resultPosition = _gridMoving.TryMove(false, _player.Position, _intVector);
             }
             else
             {
@@ -61,8 +66,7 @@ public class PlayerInputController : MonoBehaviour
 
             if (resultPosition.y < _player.Map.Count && resultPosition.x < _player.Map[0].Count)
             {
-                _player.x = resultPosition.x;
-                _player.y = resultPosition.y;
+                _player.Position = resultPosition;
                 _canAction = false;
                 _actTimer = 0.0f;
             }
@@ -71,7 +75,7 @@ public class PlayerInputController : MonoBehaviour
 
     public void MovedAction()
     {
-        if (_player.Map[_player.y][_player.x].OnItem != null)
+        if (_player.Map[_player.Position.y][_player.Position.x].OnItem != null)
         {
             _player.GetItem();
         }

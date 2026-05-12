@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public enum ItemKind
 {
     Weapon,
@@ -14,10 +13,9 @@ public enum ItemKind
     Other
 }
 
-public class Item : ScriptableObject
+public class ItemData : ScriptableObject
 {
     [Header("全アイテム共通要素")]
-    public int ID;
     public string Name;
     public ItemKind Kind;
     public int Price;

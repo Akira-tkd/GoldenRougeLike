@@ -10,17 +10,16 @@ public class Player : Charactor
 
     public List<List<DangeonTile>> Map;
 
-    public int x;
-    public int y;
+    public Vector2Int Position;
 
-    public List<Item> Items;
+    public List<Item> Items = new List<Item>();
 
     public void GetItem()
     {
-        Item item = Map[y][x].OnItem;
+        Item item = Map[Position.y][Position.x].OnItem;
         Items.Add(item);
-        Map[y][x].OnItem = null;
-        Debug.Log($"{item.Name}‚ðƒQƒbƒg‚µ‚Ü‚µ‚½!");
-        DangeonManager.Instance.DeleteItem(new Vector2Int(x, y));
+        Map[Position.y][Position.x].OnItem = null;
+        Debug.Log($"{item.Data.Name}‚ðƒQƒbƒg‚µ‚Ü‚µ‚½!");
+        DangeonManager.Instance.DeleteItem(item.Id);
     }
 }

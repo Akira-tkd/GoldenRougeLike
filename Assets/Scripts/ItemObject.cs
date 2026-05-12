@@ -15,7 +15,5 @@ public class ItemObject : MonoBehaviour
         Vector3 worldPos = tilemap.GetCellCenterWorld(new Vector3Int(pos.x, pos.y, 0));
         transform.position = worldPos;
         _sr.sprite = _sprites[(int)kind];
-
-        DangeonManager.Instance.ItemObjectDict.Add(pos, this.gameObject);
     }
 }
