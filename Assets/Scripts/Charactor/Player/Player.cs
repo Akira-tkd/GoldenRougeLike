@@ -20,6 +20,7 @@ public class Player : Charactor
         Items.Add(item);
         Map[Position.y][Position.x].OnItem = null;
         Debug.Log($"{item.Data.Name}‚ðƒQƒbƒg‚µ‚Ü‚µ‚½!");
+        Debug.Log($"ID:{item.Id}");
         DangeonManager.Instance.DeleteItem(item.Id);
     }
 }
