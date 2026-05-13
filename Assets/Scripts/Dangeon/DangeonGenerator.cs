@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 
@@ -50,7 +51,7 @@ public class Room
     }
 }
 
-public class DangeonGenerator : MonoBehaviour
+public class DangeonGenerator : NetworkBehaviour
 {
     /*
      * 乱数からDungeonTileの二次元リストを生成するメソッドを持つ
@@ -60,6 +61,7 @@ public class DangeonGenerator : MonoBehaviour
     public List<GameObject> Players;  // マルチプレイ想定のためスポーンするプレイヤーのリストを持つ
     [SerializeField] GameObject _itemObject;
     [SerializeField] Tilemap _tilemap;  // プレイヤーがタイルマップを参照したいため、生成時に渡せるように持っておく
+    [SerializeField] BuildFloor _bf;  // フロアの情報をGameObjectとして生成するクラス
 
     [SerializeField] int _mapHeight;  // マップの縦幅の最大値
     [SerializeField] int _mapWidth;  // マップの横幅の最大値
@@ -73,6 +75,7 @@ public class DangeonGenerator : MonoBehaviour
     private int _roomMaxSize;  // 部屋の最大サイズ
 
     public float ExtraConnectionChance;  // 一つの部屋に対して余分に接続路が生成される確率
+    private bool _isGenerated;
 
     // 地形生成中は仮でintの二次元配列を使うため、それの意味定義
     const int WALL = 0;
@@ -81,6 +84,18 @@ public class DangeonGenerator : MonoBehaviour
 
     int[,] _mapinfo;  // 仮で使う地形情報の配列
     List<Room> rooms = new List<Room>();  // 生成した部屋の数
+
+    void Start()
+    {
+        TryGenerate(0, DangeonManager.Instance.FloorSeed.Value);
+    }
+
+    void TryGenerate(int oldSeed, int newSeed)
+    {
+        if(_isGenerated) return;
+        Generate(newSeed);
+    }
+
 
     // 地形生成用のメソッド
     // 乱数固定用の引数seedが必要
@@ -101,6 +116,9 @@ public class DangeonGenerator : MonoBehaviour
 
         PlayerSpwan(rand);  // プレイヤーをスポーンさせる
         ItemSpawn(rand);  // アイテムをスポーンさせる
+        _bf.Build();
+
+        _isGenerated = true;
 
         // RoomDebug();  // 地形をテキスト表示するデバッグ用のメソッド
     }
@@ -139,7 +157,7 @@ public class DangeonGenerator : MonoBehaviour
         {
             trying++;
 
-            int width = rand.Next(_roomMinSize, _roomMaxSize + 1);  // 生成する部屋の横幅
+            int width = rand.Next(_roomMinSize, _roomMaxSize + 1);  // 生成する部屋の横幅            Debug.Log(width);
             int height = rand.Next(_roomMinSize, _roomMaxSize + 1);  // 生成する部屋の縦幅
 
             int x = rand.Next(1, _mapWidth - width - 1);  // 生成する部屋の左上の点のx座標
