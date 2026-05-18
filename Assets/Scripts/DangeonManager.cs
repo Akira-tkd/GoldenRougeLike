@@ -18,7 +18,7 @@ public class DangeonManager : NetworkBehaviour
 
     private int nextItemId;
 
-    void Awake()
+    public override void OnNetworkSpawn()
     {
         if(Instance != null)
         {
@@ -36,13 +36,11 @@ public class DangeonManager : NetworkBehaviour
     void Init(Scene scene, LoadSceneMode mode)
     {
         Debug.Log("Initスタート");
-        if (!NetworkManager.Singleton.IsHost)
+        if (NetworkManager.Singleton.IsHost)
         {
-            Debug.Log("お前はホストじゃない");
-            return;
+            FloorSeed.Value = Guid.NewGuid().GetHashCode();
         }
 
-        FloorSeed.Value = Guid.NewGuid().GetHashCode();
         ItemObjectDict = new Dictionary<int, ItemObject>();
         ItemDict = new Dictionary<int, Item>();
         nextItemId = 0;

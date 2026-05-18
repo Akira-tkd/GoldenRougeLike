@@ -64,6 +64,7 @@ public class PlayerInputController : NetworkBehaviour
                 return;
             }
 
+            Debug.Log(resultPosition);
             if (resultPosition.y < _player.Map.Count && resultPosition.x < _player.Map[0].Count)
             {
                 _player.Position = resultPosition;
