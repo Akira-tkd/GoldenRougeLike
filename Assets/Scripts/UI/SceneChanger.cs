@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Unity.Netcode;
 
 public class SceneChanger : MonoBehaviour
 {
@@ -7,6 +8,14 @@ public class SceneChanger : MonoBehaviour
 
     public void OnClicked()
     {
-        SceneManager.LoadScene(_sceneName);
+        NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
+    }
+
+    void Awake()
+    {
+        if (!NetworkManager.Singleton.IsHost)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
