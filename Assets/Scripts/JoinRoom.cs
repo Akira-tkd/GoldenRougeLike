@@ -30,4 +30,9 @@ public class JoinRoom : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayData);
         NetworkManager.Singleton.StartClient();
     }
+
+    public void DebugOnClicked()
+    {
+        Debug.Log("‰Ÿ‚³‚ê‚Ü‚µ‚½");
+    }
 }
