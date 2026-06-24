@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 using Unity.Netcode;
 
 public class SpawnPlayer : MonoBehaviour
@@ -18,4 +18,4 @@ public class SpawnPlayer : MonoBehaviour
         player.GetComponent<Player>().Init(new Vector2Int(0, 0), _playerData);
         player.GetComponent<NetworkObject>().SpawnAsPlayerObject(1);
     }
-}
+}*/
